@@ -31,6 +31,35 @@ npm start
 
 Note: If you're using Linux Bash for Windows, [see this guide](https://www.howtogeek.com/261575/how-to-run-graphical-linux-desktop-applications-from-windows-10s-bash-shell/) or use `node` from the command prompt.
 
+## Integrating with CleverTap
+Add the [integration script from the CleverTap Docs](https://developer.clevertap.com/docs/web-quickstart-guide#section-add-the-clever-tap-java-script-library-to-your-website) to `index.html`.
+
+To correctly initialise the CleverTap session in the app add [electron-cookies](https://github.com/expo/electron-cookies) package to the project.
+```
+npm install @exponent/electron-cookies --save
+```
+
+Add a `preload` script and set `enableRemoteModule` to `true` while creating `BrowserWindow`.
+
+```javascript
+const mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      enableRemoteModule: true
+    }
+  })
+```
+
+In `preload.js` import `electron-cookies` and enable it.
+```javascript
+let ElectronCookies = require('@exponent/electron-cookies');
+window.addEventListener('DOMContentLoaded', () => {
+  ElectronCookies.enable({ origin: 'https://example.com' });
+})
+```
+
 ## Resources for Learning Electron
 
 - [electronjs.org/docs](https://electronjs.org/docs) - all of Electron's documentation
